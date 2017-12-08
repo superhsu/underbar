@@ -213,7 +213,7 @@
     // TIP: Try re-using reduce() here.
     if (arguments.length === 1) {
       return _.reduce(collection, function (preTruth, item) {
-        return (!!_.identity(item) == true) && preTruth;
+        return (!!_.identity(item) == true);
       }, true);
     }
     else {
@@ -227,7 +227,7 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    if (arguments.length === 1) {
+     if (arguments.length === 1) {
       return _.reduce(collection, function (anyTruth, item) {
         return (!!_.identity(item) == true) || anyTruth;
       },false);
@@ -238,7 +238,6 @@
       },false);
     }
   };
-
 
   /**
    * OBJECTS
@@ -274,7 +273,7 @@
     for (var i = 1; i < arguments.length; i++) {
       var newObj = arguments[i];
       for (var key in newObj) {
-        if (!(key in obj)) {
+        if (obj.hasOwnProperty(key) === false) {
           obj[key] = newObj[key]; 
           }
         }
@@ -322,6 +321,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var storage = {};
+
+    return function() {
+      var arg = JSON.stringify(arguments);
+      if (!storage[arg]) {
+        storage[arg] = func.apply(this, arguments);
+      }
+
+      return storage[arg];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -331,7 +340,8 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-  };
+      setTimeout.apply(this, arguments);
+      };
 
 
   /**
@@ -345,7 +355,17 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var copy = array.slice(0,array.length)
+    var shuffled = [];
+    var index;
+      for (var i = 0; i < array.length; i++) {
+        index = Math.floor(Math.random()*copy.length);
+        shuffled.push(copy[index]);
+        copy.splice(index,1);
+      }
+    return shuffled;
   };
+
 
 
   /**
